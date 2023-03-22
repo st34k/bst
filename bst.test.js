@@ -1,4 +1,5 @@
 import BST from './bst.js'
+// TODO: clean up
 
 describe('BST', () => {
   let tree = new BST()

@@ -13,17 +13,9 @@ export default class BST {
     if (node.val === val) return // no duplicates
 
     if (val < node.val) {
-      if (node.left) {
-        this.insert(val, node.left)
-      } else {
-        node.left = new BSTNode(val, node)
-      }
+      node.left ? this.insert(val, node.left) : node.left = new BSTNode(val, node)
     } else {
-      if (node.right) {
-        this.insert(val, node.right)
-      } else {
-        node.right = new BSTNode(val, node)
-      }
+      node.right ? this.insert(val, node.right) : node.right = new BSTNode(val, node)
     }
   }
 
@@ -31,26 +23,40 @@ export default class BST {
     let targetNode = this.search(target)
 
     if (targetNode) {
-      if (this.isLeaf(targetNode)) { // no children
-        if (targetNode.parent) {
-          targetNode.parent.left === targetNode ? targetNode.parent.left = null : targetNode.parent.right = null
-        } else {
-          this.root = null // only root has no parent
-        }
-      } else if (!targetNode.right ^ !targetNode.left) { // single child
-        Object.assign(targetNode, targetNode.right || targetNode.left)
+      if (this.isLeaf(targetNode)) {
+        this.removeLeaf(targetNode)
+      } else if (!targetNode.right ^ !targetNode.left) {
+        this.removeNodeWithSingleChild(targetNode)
       } else {
-        // if the node has 2 children, find inorder successor (right --> left all the way)
-        let successorNode = this.getInorderSuccessor(targetNode.right)
-        const successorVal = successorNode.val
-
-        this.remove(successorVal)
-
-        targetNode.val = successorVal
+        this.removeNodeWithTwoChildren(targetNode)
       }
     } else {
       return 'not found'
     }
+  }
+
+  removeLeaf(node) {
+    if (node.parent) {
+      node.parent.left === node ? node.parent.left = null : node.parent.right = null
+    } else {
+      this.root = null // only root has no parent
+    }
+  }
+
+  removeNodeWithSingleChild(node) {
+    let child = node.right || node.left
+    child.parent = node.parent
+
+    Object.assign(node, child)
+  }
+
+  removeNodeWithTwoChildren(node) {
+    let successorNode = this.getInorderSuccessor(node.right)
+    const successorVal = successorNode.val
+
+    this.remove(successorVal)
+
+    node.val = successorVal
   }
 
   getInorderSuccessor(node) {
@@ -85,7 +91,7 @@ export default class BST {
   }
 
   postOrderTraverse(node = this.root, nodes = []) {
-      if (node) {
+    if (node) {
       this.postOrderTraverse(node.left, nodes)
       this.postOrderTraverse(node.right, nodes)
       nodes.push(node.val)
