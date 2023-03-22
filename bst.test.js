@@ -1,5 +1,4 @@
 import BST from './bst.js'
-import BSTNode from './node';
 
 describe('BST', () => {
   let tree = new BST()
@@ -47,7 +46,7 @@ describe('BST', () => {
       tree.remove(7)
 
       expect(tree).toEqual({
-        parent: null, root: null
+        root: null
       })
     })
 
@@ -57,11 +56,11 @@ describe('BST', () => {
       tree.remove(7)
 
       expect(tree.root).toEqual({
-        left: null, right: null, val: 3
+        left: null, right: null, parent: null, val: 3
       })
     })
 
-    test('remove - with 2 children', () => {
+    test('remove - node with 2 children (replacement is a leaf)', () => {
       // fix the expect here
       [7, 3, 10].forEach(n => tree.insert(n))
       tree.remove(7)
@@ -71,7 +70,7 @@ describe('BST', () => {
       expect(tree.root.right).toBeNull()
     })
 
-    test('remove twice', () => {
+    test('remove twice in succession', () => {
       // fix the expect here
       [7, 3, 10, 4, 5].forEach(n => tree.insert(n))
       tree.remove(7)
@@ -80,6 +79,44 @@ describe('BST', () => {
       expect(tree.root.val).toEqual(10)
       expect(tree.root.left.val).toEqual(4)
       expect(tree.root.left.right.val).toEqual(5)
+    })
+
+    test('remove - node with 2 children (replacement has right child)', () => {
+      // fix the expect here
+      [10, 5, 15, 4, 14, 16, 7, 8].forEach(n => tree.insert(n))
+      tree.remove(5)
+
+      expect(tree.root.left.val).toEqual(7)
+      expect(tree.root.left.right.val).toEqual(8)
+
+      expect(tree.root.left.right.left).toBeNull()
+      expect(tree.root.left.right.right).toBeNull()
+    })
+  })
+
+  describe('traversals', () => {
+    let t = new BST()
+
+    beforeAll(() => {
+      ['d', 'b', 'a', 'c', 'e'].forEach(n => t.insert(n))
+    })
+
+    test('inOrder', () => {
+      const res = t.inOrderTraverse()
+
+      expect(res).toEqual(['a', 'b', 'c', 'd', 'e'])
+    })
+
+    test('postOrder', () => {
+      const res = t.postOrderTraverse()
+
+      expect(res).toEqual(['a', 'c', 'b', 'e', 'd'])
+    })
+
+    test('preOrder', () => {
+      const res = t.preOrderTraverse()
+
+      expect(res).toEqual(['d', 'b', 'a', 'c', 'e'])
     })
   })
 })
