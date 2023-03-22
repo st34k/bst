@@ -103,18 +103,4 @@ export default class BST {
 
     return nodes
   }
-
-  // traverse(node = this.root, nodes = [], type = 'postOrder') {
-  //   if (node) {
-  //
-  //   }
-  //
-  //   const traversals = {
-  //     inorder: () => {
-  //       this.traverse(node.left, nodes, 'inorder')
-  //       nodes.push(node)
-  //       this.traverse(node.right, nodes, 'inorder')
-  //     }
-  //   }
-  // }
 }
